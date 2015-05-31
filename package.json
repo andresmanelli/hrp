@@ -1,0 +1,35 @@
+{
+  "name": "hrp",
+  "version": "0.1.0",
+  "description": "Module that implements a protocol for talking to robots over a HID-USB communication",
+  "main": "hrp.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "keywords": [
+    "robotics",
+    "usb",
+    "hid"
+  ],
+  "author": "Andrés Manelli",
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "chai-as-promised": "^5.0.0",
+    "grunt": "^0.4.5",
+    "grunt-mocha-test": "^0.12.7",
+    "mocha": "^2.2.5",
+    "sinon": "^1.14.1",
+    "sinon-chai": "^2.7.0"
+  },
+  "dependencies": {
+    "colors": "^1.1.0",
+    "es6-promise": "^2.1.1",
+    "javascript-state-machine": "^2.3.5",
+    "node-hid": "^0.4.0",
+    "zmq": "^2.11.1"
+  }
+}
