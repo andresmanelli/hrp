@@ -240,6 +240,54 @@ var hrp = function(path,port,rdefs){
   };
 
   /**
+   * Converts an object with the robot info in a hrp string
+   * @param  {Object} info  Robot's basic info
+   * @param  {Object} jInfo Robot's joints info
+   * @return {String}       The info in a hrp formatted string
+   */
+  defs.robotInfo2str = function(info,jInfo){
+    var str = ':HRP:INFO:R';
+
+    for (var key in info){
+      if(info.hasOwnProperty(key)){
+        str += [':', key, ':', info[key]].join('');
+        if(key === 'J'){
+          for(var i=0;i<info[key].length;i++){
+            for(var key2 in jInfo[info[key][i]]){
+              if(jInfo[info[key][i]].hasOwnProperty(key2)){
+                str += [':', key2, ':', jInfo[info[key][i]][key2]].join('');
+              }
+            }
+          }
+        }
+      }
+    }
+
+    str += ':';
+
+    return str;
+  };
+  /**
+   * Converts an object containing the joints values into a hrp string
+   * @param  {Object} joints Joints' values of the form: { ID: VALUE, ...}
+   *                         Where ID is an integer between 0 and 999
+   * @return {String}        The values in a hrp formatted string
+   */
+  defs.joints2str = function(joints){
+    var str = defs.GET_JOINTS();
+
+    for(var id in joints){
+      if(joints.hasOwnProperty(id)){
+        str = [str,id,':',defs.formatValue(joints[id]),':'].join('');
+        //Below is percent
+        //str = [str,id,':',('00'+Math.floor((joints[id]/parseFloat(virtualRobotJInfo[id].J_RANGE[1]))*100)).substr(-3),':'].join(''); 
+      }
+    }
+    
+    return str;
+  };
+
+  /**
    * We format a decimal value and print only two decimals. V-REP script is
    * coded in LUA and it's complicated to work with floating point numbers. We
    * know this way how the string will look like and then we parse each part
