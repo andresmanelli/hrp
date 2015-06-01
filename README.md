@@ -2,13 +2,13 @@
 Module that implements a protocol for talking to robots over a HID-USB communication
 
 ## Install
-===========
+
 ```
 npm install hrp
 ```
 
 ## Use
-=======
+
 ```js
 var HRP = require('hrp');
 
