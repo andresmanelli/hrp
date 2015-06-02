@@ -80,9 +80,9 @@ Where:
   - (value is a number with two decimal places. It must contain the two decimal places, as in 1.00)
 
 ### Example of information string
-Q: ```:HRP:G:R:INFO``` -- A: ```:HRP:R:INFO:B:MY_BRAND:M:MODEL_A:DOF:2:J:12,56:```
-Q: ```:HRP:G:J:INFO:12``` -- A: ```:HRP:J:INFO:12:J_TYPE:R:J_DESC:CC_MOTOR:J_RANGE:0.00,180.00:J_UNITS:deg:```
-Q: ```:HRP:G:J:INFO:56``` -- A: ```:HRP:J:INFO:56:J_TYPE:T:J_DESC:STEPPER_MOTOR:J_RANGE:0.00,20.00:J_UNITS:mm:```
+Q: ```:HRP:G:R:INFO``` -- A: ```:HRP:R:INFO:B:MY_BRAND:M:MODEL_A:DOF:2:J:012,056:```
+Q: ```:HRP:G:J:INFO:012``` -- A: ```:HRP:J:INFO:012:J_TYPE:R:J_DESC:CC_MOTOR:J_RANGE:0.00,180.00:J_UNITS:deg:```
+Q: ```:HRP:G:J:INFO:056``` -- A: ```:HRP:J:INFO:056:J_TYPE:T:J_DESC:STEPPER_MOTOR:J_RANGE:0.00,20.00:J_UNITS:mm:```
 
  - The order of the fields are not important because they are stored in an object.
  
