@@ -366,7 +366,6 @@ var hrp = function(path,port,rdefs){
                 (function(){
                   var vals = '';
                   values.forEach(function(val){
-                    console.log(val);
                     vals = vals.concat(defs.SEP, defs.formatValue(val));
                   });
                   return vals;

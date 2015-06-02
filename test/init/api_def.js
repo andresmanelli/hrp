@@ -7,7 +7,6 @@ global.defs = [
 	'robotInfoParams',
 	'jointInfoParams',
 	'check_id',
-	'check_joint_value',
 	'str2intArray',
 	'str2Joints',
 	'str2RobotInfo',
