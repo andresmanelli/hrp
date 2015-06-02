@@ -3,3 +3,9 @@ node_js:
   - "0.10"
 before_install:
   - sudo apt-get install libusb-1.0-0-dev
+  - wget http://download.zeromq.org/zeromq-4.0.5.tar.gz
+  - tar xf zeromq-4.0.5.tar.gz
+  - cd zeromq-4.0.5
+  - ./configure
+  - make
+  - sudo make install
