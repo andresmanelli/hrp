@@ -41,8 +41,8 @@ Where:
 * Decimal point is actually a point ```1.23```
 * The robot must ACK the received _Set_ command even if it can not complete the operation (e.g., move the end effector to desired position)
 * The robot must not ACK the received _Get_ command, it should only send the requested information
-  * ACK: ```A:```
-  * Compilance ACK: ```CA:```
+  * ACK: ```A```
+  * Compilance ACK: ```CA```
 * The robot should send the following general information when asked to:
   * Brand (string) (```B```)
   * Model (string) (```M```)
@@ -56,13 +56,13 @@ Where:
 
 ### Specifics
 * HRP-Compilance ACK frame
-  - Q: ```:HRP:CA:``` -- A: ```:HRP:CA```
+  - Q: ```:HRP:CA:``` -- A: ```:HRP:CA:```
 * Get the robot information
   - Q: ```:HRP:G:R:INFO:``` -- A: ```:HRP:R:INFO:info_string:```
   - (info_string can be obtained with the function ```HRP.robotInfo2str(info)```
   - (the info can be converted to an object with the function ```HRP.str2robotInfo(str)```
 * Get the joint information
-  - Q: ```:HRP:G:J:INFO:``` -- A: ```:HRP:J:INFO:info_string```
+  - Q: ```:HRP:G:J:INFO:``` -- A: ```:HRP:J:INFO:info_string:```
   - (info_string can be obtained with the function ```HRP.robotInfo2str(info)```
   - (the info can be converted to an object with the function ```HRP.str2robotInfo(str)```
 * Get a joint value
@@ -75,7 +75,7 @@ Where:
   - Q: ```:HRP:S:EE:V:x_pos:y_pos:z_pos:``` -- A: ```:HRP:A:S:EE:V:```
   - (work TODO: set also the orientation)
 * Set a joint value (position, angle, etc)
-  - Q: ```:HRP:S:J:V:id:value:```
+  - Q: ```:HRP:S:J:V:id:value:``` -- A: ```:HRP:A:S:J:V:id```
   - (id is an integer between 0 and 999, formatted as 000-999)
   - (value is a number with two decimal places. It must contain the two decimal places, as in 1.00)
 
