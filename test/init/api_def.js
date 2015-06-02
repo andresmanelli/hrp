@@ -31,7 +31,7 @@ global.protocol = [
 	'port',
 	'isHRP',
 	'getRobotInfo',
-	'setFEDifPos',
+	'setEEDifPos',
 	'getJoints'
 ];
 
@@ -44,22 +44,22 @@ global.frames = {
   	frame: /^:HRP:CA:$/
   },
   'ROBOT_INFO': {
-  	frame: /^:HRP:INFO:R:$/
+  	frame: /^:HRP:G:R:INFO:$/
   },
   'JOINT_INFO': {
-  	frame: /^:HRP:INFO:J:[0-9][0-9][0-9]/
+  	frame: /^:HRP:G:J:INFO:[0-9][0-9][0-9]/
   },
   'SET_JOINT': {
-  	frane: /^:HRP:S:J:[0-9][0-9][0-9]:[0-9][0-9][0-9]/
+  	frane: /^:HRP:S:J:V:[0-9][0-9][0-9]:[0-9][0-9][0-9]/
   },
-  'SET_FE_DIF_POS': {
-  	frame: /^:HRP:S:FE:[0-9]+[.]+[0-9]{2}:[0-9]+[.]+[0-9]{2}:[0-9]+[.]+[0-9]{2}:$/
+  'SET_EE_DIF_POS': {
+  	frame: /^:HRP:S:EE:V:[0-9]+[.]+[0-9]{2}:[0-9]+[.]+[0-9]{2}:[0-9]+[.]+[0-9]{2}:$/
   },
   'GET_JOINT': {
-  	frame: /^:HRP:G:J:[0-9][0-9][0-9]:$/
+  	frame: /^:HRP:G:J:V:[0-9][0-9][0-9]:$/
   },
   'GET_JOINTS': {
-  	frame: /^:HRP:G:AJ:$/
+  	frame: /^:HRP:G:AJ:V:$/
   }
 };
 
@@ -70,17 +70,5 @@ global.frame_parts = [
 	'GA',
 	'GET',
 	'SET',
-	'FE'
-];
-
-global.joy_cmds = [
-	'MU',
-	'MD',
-	'ML',
-	'MR',
-	'MF',
-	'MB',
-	'MN',
-	'M2',
-	'M3'
+	'EE'
 ];

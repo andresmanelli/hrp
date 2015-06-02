@@ -83,47 +83,21 @@ var hrp = function(path,port,rdefs){
     }
   };
 
-  /**
-   * Joints value in percent must be >= 0 and <= 100
-   * @param  {Double} value Joint position in percentage
-   * @return {Double}       value retricted to 0..100
-   */
-  defs.check_joint_value = function(value){
-    if (value < 0){
-      value = 0;
-      console.log(colors.warn('WARNING: Joint value < 0, setting to 0'));
-    }else if (value > 100){
-      value = 100;
-      console.log(colors.warn('WARNING: Joint value > 100, setting to 100'));
-    }
-    
-    return value;
-  };
-
   // Protocol frame elements
   defs.SEP = ':';
   defs.ARRAY_SEP = ',';
-  defs.HRP = 'HRP'; //HID Robot Protocol
-  defs.CA = 'CA'; //Compatibility Ack
-  defs.GA = 'GA'; //General Ack
-  defs.INFO = 'INFO'; //Info about something
-  defs.GET = 'G'; //Get something
-  defs.SET = 'S'; //Set something
-  defs.FE = 'FE'; //Final Effector
-  defs.JOINT = 'J'; //Joint identifier next
-  defs.JOINTS = 'AJ'; //All Joints
-  defs.ROBOT = 'R'; //Robot
-  
-  // Final effector commands identifiers
-  defs.MU = 'MU'; //Move Up
-  defs.MD = 'MD'; //Move Down
-  defs.MR = 'MR'; //Move Right
-  defs.ML = 'ML'; //Move Left
-  defs.MF = 'MF'; //Move Forward
-  defs.MB = 'MB'; //Move Backward
-  defs.M2 = 'M2'; //Move In X and Y
-  defs.M3 = 'M3'; //Move In X,Y, and Z
-  defs.MN = 'MN'; //Move None
+  defs.HRP = 'HRP'; // HID Robot Protocol
+  defs.CA = 'CA'; // Compilance Ack
+  defs.GA = 'A'; // General Ack
+  defs.INFO = 'INFO'; // Info about something
+  defs.GET = 'G'; // Get something
+  defs.GET_ALL = 'GA';
+  defs.SET = 'S'; // Set something
+  defs.SET_ALL = 'SA';
+  defs.EE = 'EE'; // End Effector
+  defs.JOINT = 'J'; // Joint
+  defs.ROBOT = 'R'; // Robot
+  defs.VAL = 'V'; // Value
 
   /**
    * Converts a string to an Integer array
@@ -298,127 +272,133 @@ var hrp = function(path,port,rdefs){
   defs.formatValue = function(val){
     // Sign
     var sign = val<0?'-':'';
-    val = Math.abs(val);
+    var absval = Math.abs(val);
     // Integer part
-    var int = sign+Math.floor(val);
+    var int = Math.floor(absval);
     // Decimal part
-    var dec = Math.floor((val-int)*100);
+    var dec = Math.round(Math.abs((val-int)*100));
     // Force two decimals, even if it is .00
-    var str = [int,'.',('00'+dec).substr(-2)].join('');
-
+    var str = [sign,int,'.',('00'+dec).substr(-2)].join('');
+    
     return str;
   };
 
   // Ack frame
   defs.GENERAL_ACK = function(){
-                        return [  defs.SEP,
-                                  defs.HRP,
-                                  defs.SEP,
-                                  defs.GA,
-                                  defs.SEP].join('');
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.GA,
+              defs.SEP].join('');
   };
 
   // HRP compilance test frame
   defs.COMP_ACK = function(){
-                        return [  defs.SEP,
-                                  defs.HRP,
-                                  defs.SEP,
-                                  defs.CA,
-                                  defs.SEP].join('');
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.CA,
+              defs.SEP].join('');
   };
                 
   // Robot's information request frame
   defs.ROBOT_INFO = function(){
-                          return [  defs.SEP,
-                                    defs.HRP,
-                                    defs.SEP,
-                                    defs.INFO,
-                                    defs.SEP,
-                                    defs.ROBOT,
-                                    defs.SEP].join('');
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.INFO,
+              defs.SEP,
+              defs.ROBOT,
+              defs.SEP].join('');
   };
 
   // Joint's information request frame
   defs.JOINT_INFO = function(id){
-                          id = defs.check_id(id);
-                          if(!id)
-                            return 'E';
-                          return [  defs.SEP,
-                                    defs.HRP,
-                                    defs.SEP,
-                                    defs.INFO,
-                                    defs.SEP,
-                                    defs.JOINT,
-                                    defs.SEP,
-                                    ('00'+id).substr(-3),
-                                    defs.SEP].join('');
+    id = defs.check_id(id);
+    if(!id)
+      return 'E';
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.INFO,
+              defs.SEP,
+              defs.JOINT,
+              defs.SEP,
+              ('00'+id).substr(-3),
+              defs.SEP].join('');
   };
                                     
   // Joint's value set frame
   defs.SET_JOINT =  function(value){
-                          value = defs.check_joint_value(value);
-                          return [  defs.SEP,
-                                    defs.HRP,
-                                    defs.SEP,
-                                    defs.SET,
-                                    defs.SEP,
-                                    defs.JOINT,
-                                    defs.SEP,
-                                    ('00'+value).substr(-3),
-                                    defs.SEP].join('');
+    value = defs.check_joint_value(value);
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.SET,
+              defs.SEP,
+              defs.JOINT,
+              defs.SEP,
+              ('00'+value).substr(-3),
+              defs.SEP].join('');
   };
   
-  // Final Effector set frame. Differential movement in one direction.
+  // End Effector set frame. Differential movement in one direction.
   // TODO: UNITS. If called without arguments, returns the preambule
-  defs.SET_FE_DIF_POS = function(move,values){
-                          var header = [  defs.SEP,
-                                    defs.HRP,
-                                    defs.SEP,
-                                    defs.SET,
-                                    defs.SEP,
-                                    defs.FE,
-                                    defs.SEP].join('');
-                                    
-                          if(typeof move === 'undefined' && typeof values === 'undefined')
-                            return header;
-                            
-                          return [  header,
-                                    move,
-                                    (function(){
-                                      var vals = '';
-                                      values.forEach(function(val){
-                                        vals = vals.concat(defs.SEP, defs.formatValue(val));
-                                      });
-                                      return vals;
-                                    })(),
-                                    defs.SEP].join('');
+  defs.SET_EE_DIF_POS = function(values){
+
+    var header = [  defs.SEP,
+                    defs.HRP,
+                    defs.SEP,
+                    defs.SET,
+                    defs.SEP,
+                    defs.EE,
+                    defs.SEP,
+                    defs.VAL].join('');
+
+    if(typeof values === 'undefined' || values === null){
+        return header;
+    }  
+
+    if( Object.prototype.toString.call(values) !== '[object Array]' || values.length !== 3) {
+        return false;
+    }
+      return [  header,
+                (function(){
+                  var vals = '';
+                  values.forEach(function(val){
+                    console.log(val);
+                    vals = vals.concat(defs.SEP, defs.formatValue(val));
+                  });
+                  return vals;
+                })(),
+                defs.SEP].join('');
   };
 
   // Joint's value get frame
   defs.GET_JOINT =  function(id){ 
-                          id = defs.check_id(id);
-                          if(!id)
-                            return false;
-                          return [  defs.SEP,
-                                    defs.HRP,
-                                    defs.SEP,
-                                    defs.GET,
-                                    defs.SEP,
-                                    defs.JOINT,
-                                    defs.SEP,
-                                    ('00'+id).substr(-3),
-                                    defs.SEP].join('');
+    id = defs.check_id(id);
+    if(!id)
+      return false;
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.GET,
+              defs.SEP,
+              defs.JOINT,
+              defs.SEP,
+              ('00'+id).substr(-3),
+              defs.SEP].join('');
   };
   
   // All Joints' values get frame
   defs.GET_JOINTS =  function(){ 
-                          return [  defs.SEP,
-                                    defs.HRP,
-                                    defs.SEP,
-                                    defs.GET,
-                                    defs.SEP,
-                                    defs.JOINTS,
-                                    defs.SEP].join('');
+    return [  defs.SEP,
+              defs.HRP,
+              defs.SEP,
+              defs.GET_ALL,
+              defs.SEP,
+              defs.JOINT,
+              defs.SEP].join('');
   };
 
 
@@ -439,7 +419,7 @@ var hrp = function(path,port,rdefs){
       {name: 'ackReceived',       from: 'waitAck',  to: 'idle'},
       {name: 'requestRobotInfo',  from: 'idle',     to: 'waitRobotInfo'},
       {name: 'gotRobotInfo',      from: 'waitRobotInfo',     to: 'idle'},
-      {name: 'setFEDifPos',       from: 'idle',     to: 'waitAck'},
+      {name: 'setEEDifPos',       from: 'idle',     to: 'waitAck'},
       {name: 'getJoints',         from: 'idle',     to: 'waitJoints'},
       {name: 'gotJoints',         from: 'waitJoints',  to: 'idle'}
     ],
@@ -450,8 +430,8 @@ var hrp = function(path,port,rdefs){
       onrequestRobotInfo: function(event, from, to){
         protocol.write(defs.ROBOT_INFO());
       },
-      onsetFEDifPos: function(event,from,to,move,value){
-        protocol.write(defs.SET_FE_DIF_POS(move,value));
+      onsetEEDifPos: function(event,from,to,move,value){
+        protocol.write(defs.SET_EE_DIF_POS(move,value));
       },
       ongetJoints: function(event,from,to){
         protocol.write(defs.GET_JOINTS());
@@ -593,12 +573,12 @@ var hrp = function(path,port,rdefs){
   };
 
   /**
-   * Sends the order of Final Effector movement to the robot. If the robot
+   * Sends the order of End Effector movement to the robot. If the robot
    * does not respond with an ACK, then the Promise is rejected.
    * @param {String} move  Direction of movement. ('MU','MD','ML','MR','MF','MB','MN')
    * @param {String} value Amount of movement. SHOULD BE X.XX TODO!!
    */
-  protocol.setFEDifPos = function(move,value){
+  protocol.setEEDifPos = function(move,value){
       
       if(protocol.fsm.current !== 'idle'){
         return Promise.reject();
@@ -610,7 +590,7 @@ var hrp = function(path,port,rdefs){
       return new Promise(function(resolve, reject){
 
         // First Connect!
-        protocol.fsm.setFEDifPos(move,value);
+        protocol.fsm.setEEDifPos(move,value);
         protocol.read().then(function(msg){
           protocol.fsm.ackReceived();
           if(msg === defs.GENERAL_ACK()){

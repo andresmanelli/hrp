@@ -20,10 +20,6 @@ describe('Testing basic existance of the components of HRP',function(){
 			expect(test).to.contain.all.keys(frames);
 		});
 
-		it('should contain the keys defined in joy_cmds',function(){
-			expect(test).to.contain.all.keys(joy_cmds);
-		});
-
 		it('should contain the keys defined in frame_parts',function(){
 			expect(test).to.contain.all.keys(frame_parts);
 		});
@@ -65,10 +61,6 @@ describe('Testing basic existance of the components of HRP',function(){
 
 		it('should contain the keys defined in frames',function(){
 			expect(test).to.contain.all.keys(frames);
-		});
-
-		it('should contain the keys defined in joy_cmds',function(){
-			expect(test).to.contain.all.keys(joy_cmds);
 		});
 
 		it('should contain the keys defined in frame_parts',function(){
