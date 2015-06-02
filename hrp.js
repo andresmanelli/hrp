@@ -429,8 +429,8 @@ var hrp = function(path,port,rdefs){
       onrequestRobotInfo: function(event, from, to){
         protocol.write(defs.ROBOT_INFO());
       },
-      onsetEEDifPos: function(event,from,to,move,value){
-        protocol.write(defs.SET_EE_DIF_POS(move,value));
+      onsetEEDifPos: function(event,from,to,values){
+        protocol.write(defs.SET_EE_DIF_POS(values));
       },
       ongetJoints: function(event,from,to){
         protocol.write(defs.GET_JOINTS());
@@ -462,6 +462,7 @@ var hrp = function(path,port,rdefs){
       }
     }else{
       try{
+        console.log(robot,defs.str2intArray(msg));
         protocol.robot.write(defs.str2intArray(msg));
       }catch(err){
         //console.log(colors.warn(err));
@@ -577,7 +578,7 @@ var hrp = function(path,port,rdefs){
    * @param {String} move  Direction of movement. ('MU','MD','ML','MR','MF','MB','MN')
    * @param {String} value Amount of movement. SHOULD BE X.XX TODO!!
    */
-  protocol.setEEDifPos = function(move,value){
+  protocol.setEEDifPos = function(values){
       
       if(protocol.fsm.current !== 'idle'){
         return Promise.reject();
@@ -587,9 +588,8 @@ var hrp = function(path,port,rdefs){
         return Promise.reject('Not connected');
 
       return new Promise(function(resolve, reject){
-
         // First Connect!
-        protocol.fsm.setEEDifPos(move,value);
+        protocol.fsm.setEEDifPos(values);
         protocol.read().then(function(msg){
           protocol.fsm.ackReceived();
           if(msg === defs.GENERAL_ACK()){
@@ -641,9 +641,6 @@ var hrp = function(path,port,rdefs){
     }
 
     if(protocol.virtual){
-      if(protocol.sock){
-        delete protocol.sock;
-      }
       protocol.sock = zmq.socket('req');
       protocol.sock.connect('tcp://localhost:'+protocol.port);
       protocol.sock.on('message',protocol.received);

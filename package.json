@@ -1,13 +1,13 @@
 {
   "name": "hrp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Module that implements a protocol for talking to robots over a HID-USB communication",
   "main": "hrp.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "sudo grunt"
+    "test": "grunt"
   },
   "keywords": [
     "robotics",
