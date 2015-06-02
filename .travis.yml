@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "0.10"
 before_install:
-  - sudo apt-get install libudev-dev libusb-1.0.0-dev
+  - sudo apt-get install libudev-dev libusb-1.0-0-dev
