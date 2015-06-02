@@ -22,23 +22,37 @@ Where:
 
 ## Protocol
 ### Generalities
-* Every frame must start with ```:HRP:```
+* Every frame must start and finish with ```:```
+* Every frame must have the preamble ```:HRP```
 * The isssued command follows the preamble
-  * Get: ```G:```
-  * Set: ```S:```
-  * Get All: ```GA:```
-  * Set All: ```SA:```
+  * Get: ```G```
+  * Set: ```S```
+  * Get All: ```GA```
+  * Set All: ```SA```
 * The target device follows the command
-  * Robot: ```R:```  
-  * Joint(s): ```J:```
-  * End Effector: ```EE:```
+  * Robot: ```R```  
+  * Joint(s): ```J```
+  * End Effector: ```EE```
 * The target property follows the device
-  * Info: ```INFO:```
-  * Value: ```V:```
+  * Info: ```INFO```
+  * Value: ```V```
+* Every part of the frame is followed by ```:```
+* Arrays items are separated by ```,```
+* Decimal point is actually a point ```1.23```
 * The robot must ACK the received _Set_ command even if it can not complete the operation (e.g., move the end effector to desired position)
 * The robot must not ACK the received _Get_ command, it should only send the requested information
   * ACK: ```A:```
   * Compilance ACK: ```CA:```
+* The robot should send the following general information when asked to:
+  * Brand (string) (```B```)
+  * Model (string) (```M```)
+  * Degrees of Freedom (positive integer) (```DOF```)
+  * Joints' IDs (array of positive integers between 0 and 999) (```J```)
+* The robot should send the following information about a joint when asked to:
+  * Joint Type (string, e.g., 'R', 'T') (```J_TYPE```)
+  * Joint Description (string, e.g., 'Stepper Motor') (```J_DESC```)
+  * Joint Range (array of floating point numbers, e.g., [0 23.4] formatted as ':0.00,23.40:') (```J_RANGE```)
+  * Joint Units (string, e.g., 'deg','rad','mm') (```J_UNITS```)
 
 ### Specifics
 * HRP-Compilance ACK frame
@@ -47,13 +61,31 @@ Where:
   - Q: ```:HRP:G:R:INFO:``` -- A: ```:HRP:R:INFO:info_string:```
   - (info_string can be obtained with the function ```HRP.robotInfo2str(info)```
   - (the info can be converted to an object with the function ```HRP.str2robotInfo(str)```
+* Get the joint information
+  - Q: ```:HRP:G:J:INFO:``` -- A: ```:HRP:J:INFO:info_string```
+  - (info_string can be obtained with the function ```HRP.robotInfo2str(info)```
+  - (the info can be converted to an object with the function ```HRP.str2robotInfo(str)```
 * Get a joint value
   - Q: ```:HRP:G:J:V:id:``` -- A: ```:HRP:J:id:value:```
   - (id is an integer between 0 and 999, formatted as 000-999)
   - (value is a number with two decimal places. It must contain the two decimal places, as in 1.00)
 * Get all joints values
   - Q: ```:HRP:GA:J:V:``` -- A: ```:HRP:J:id1:value1: ... idn:valuen:```
+* Set the end effector value (position)
+  - Q: ```:HRP:S:EE:V:x_pos:y_pos:z_pos:``` -- A: ```:HRP:A:S:EE:V:```
+  - (work TODO: set also the orientation)
+* Set a joint value (position, angle, etc)
+  - Q: ```:HRP:S:J:V:id:value:```
+  - (id is an integer between 0 and 999, formatted as 000-999)
+  - (value is a number with two decimal places. It must contain the two decimal places, as in 1.00)
 
+### Example of information string
+Q: ```:HRP:G:R:INFO``` -- A: ```:HRP:R:INFO:B:MY_BRAND:M:MODEL_A:DOF:2:J:12,56:```
+Q: ```:HRP:G:J:INFO:12``` -- A: ```:HRP:J:INFO:12:J_TYPE:R:J_DESC:CC_MOTOR:J_RANGE:0.00,180.00:J_UNITS:deg:```
+Q: ```:HRP:G:J:INFO:56``` -- A: ```:HRP:J:INFO:56:J_TYPE:T:J_DESC:STEPPER_MOTOR:J_RANGE:0.00,20.00:J_UNITS:mm:```
+
+ - The order of the fields are not important because they are stored in an object.
+ 
 ...to be continued
 
 ## Note
