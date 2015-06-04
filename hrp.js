@@ -152,6 +152,7 @@ var hrp = function(path,port,rdefs){
     str.shift();
     str.shift();
     str.shift();
+    str.shift();
     str.pop();
     // Object to return
     var info = {};
@@ -226,24 +227,22 @@ var hrp = function(path,port,rdefs){
    * @return {String}       The info in a hrp formatted string
    */
   defs.robotInfo2str = function(info,jInfo){
-    var str = ':HRP:INFO:R';
+    var str = defs.ROBOT_INFO();
 
     for (var key in info){
       if(info.hasOwnProperty(key)){
-        str += [':', key, ':', info[key]].join('');
+        str += [key, ':', info[key],':'].join('');
         if(key === 'J'){
           for(var i=0;i<info[key].length;i++){
             for(var key2 in jInfo[info[key][i]]){
               if(jInfo[info[key][i]].hasOwnProperty(key2)){
-                str += [':', key2, ':', jInfo[info[key][i]][key2]].join('');
+                str += [key2, ':', jInfo[info[key][i]][key2],':'].join('');
               }
             }
           }
         }
       }
     }
-
-    str += ':';
 
     return str;
   };
@@ -315,6 +314,7 @@ var hrp = function(path,port,rdefs){
               defs.GET,
               defs.SEP,
               defs.ROBOT,
+              defs.SEP,
               defs.INFO,
               defs.SEP].join('');
   };
@@ -578,7 +578,7 @@ var hrp = function(path,port,rdefs){
           protocol.fsm.gotRobotInfo();
           if(msg === false)
             reject(false);
-          if(msg.substr(0,12) !== defs.ROBOT_INFO())
+          if(msg.substr(0,defs.ROBOT_INFO().length) !== defs.ROBOT_INFO())
             reject(false);
           resolve(msg);
         },function(err){
