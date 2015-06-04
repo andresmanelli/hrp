@@ -30,7 +30,7 @@ global.protocol = [
 	'port',
 	'isHRP',
 	'getRobotInfo',
-	'setEEDifPos',
+	'setEEPos',
 	'getJoints'
 ];
 
@@ -51,7 +51,7 @@ global.frames = {
   'SET_JOINT': {
   	frane: /^:HRP:S:J:V:[0-9][0-9][0-9]:[0-9][0-9][0-9]/
   },
-  'SET_EE_DIF_POS': {
+  'SET_EE_POS': {
   	frame: /^:HRP:S:EE:V:[0-9]+[.]+[0-9]{2}:[0-9]+[.]+[0-9]{2}:[0-9]+[.]+[0-9]{2}:$/
   },
   'GET_JOINT': {
@@ -64,10 +64,20 @@ global.frames = {
 
 global.frame_parts = [
 	'SEP',
-	'HRP',
+	'PRE',
+	'SEP',
+	'ARRAY_SEP',
+	'INFO',
+	'VAL',
 	'CA',
 	'GA',
 	'GET',
 	'SET',
-	'EE'
+	'GET_ALL',
+	'SET_ALL',
+	'EE',
+	'EED',
+	'JOINT',
+	'ROBOT',
+
 ];

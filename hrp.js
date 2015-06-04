@@ -1,7 +1,6 @@
 /**
  * HID Robot Protocol (HRP)
  *
- * V0.1
  *
  * Author: Andrés Manelli
  * email: andresmanelli@gmail.com
@@ -83,21 +82,28 @@ var hrp = function(path,port,rdefs){
     }
   };
 
-  // Protocol frame elements
+  /* ------- Protocol frame elements --------------*/
+  // Separators
   defs.SEP = ':';
   defs.ARRAY_SEP = ',';
-  defs.HRP = 'HRP'; // HID Robot Protocol
-  defs.CA = 'CA'; // Compilance Ack
-  defs.GA = 'A'; // General Ack
-  defs.INFO = 'INFO'; // Info about something
+  // Preamble
+  defs.PRE = ':HRP'; // HID Robot Protocol
+  // Commands
   defs.GET = 'G'; // Get something
   defs.GET_ALL = 'GA';
   defs.SET = 'S'; // Set something
   defs.SET_ALL = 'SA';
+  // Target Device
   defs.EE = 'EE'; // End Effector
+  defs.EED = 'EED'; //End effector difference
   defs.JOINT = 'J'; // Joint
   defs.ROBOT = 'R'; // Robot
+  // Target Property
+  defs.INFO = 'INFO'; // Info about something
   defs.VAL = 'V'; // Value
+  // ACKS
+  defs.CA = 'CA'; // Compilance Ack
+  defs.GA = 'A'; // General Ack
 
   /**
    * Converts a string to an Integer array
@@ -283,19 +289,20 @@ var hrp = function(path,port,rdefs){
     return str;
   };
 
-  // Ack frame
-  defs.GENERAL_ACK = function(){
-    return [  defs.SEP,
-              defs.HRP,
+  // Ack frame for given command
+  defs.GENERAL_ACK = function(cmd){
+    cmd = cmd.slice(defs.PRE.length+1);
+    return [  defs.PRE,
               defs.SEP,
               defs.GA,
+              defs.SEP,
+              cmd,
               defs.SEP].join('');
   };
 
-  // HRP compilance test frame
+  // HRP Compilance frame
   defs.COMP_ACK = function(){
-    return [  defs.SEP,
-              defs.HRP,
+    return [  defs.PRE,
               defs.SEP,
               defs.CA,
               defs.SEP].join('');
@@ -303,55 +310,65 @@ var hrp = function(path,port,rdefs){
                 
   // Robot's information request frame
   defs.ROBOT_INFO = function(){
-    return [  defs.SEP,
-              defs.HRP,
+    return [  defs.PRE,
               defs.SEP,
-              defs.INFO,
+              defs.GET,
               defs.SEP,
               defs.ROBOT,
+              defs.INFO,
               defs.SEP].join('');
   };
 
   // Joint's information request frame
-  defs.JOINT_INFO = function(id){
-    id = defs.check_id(id);
-    if(!id)
-      return 'E';
-    return [  defs.SEP,
-              defs.HRP,
+  defs.JOINT_INFO = function(){
+    return [  defs.PRE,
+              defs.SEP,
+              defs.GET,
+              defs.SEP,
+              defs.JOINT,
               defs.SEP,
               defs.INFO,
+              defs.SEP].join('');
+  };
+        
+  // Joint's value get frame
+  defs.GET_JOINT =  function(id){ 
+    id = defs.check_id(id);
+    if(!id)
+      return false;
+    return [  defs.PRE,
+              defs.SEP,
+              defs.GET,
               defs.SEP,
               defs.JOINT,
               defs.SEP,
-              ('00'+id).substr(-3),
+              defs.VAL,
+              defs.SEP,
+              ('00'+id).substr(-3), //TODO: FormatID(...)
               defs.SEP].join('');
   };
-                                    
-  // Joint's value set frame
-  defs.SET_JOINT =  function(value){
-    value = defs.check_joint_value(value);
-    return [  defs.SEP,
-              defs.HRP,
-              defs.SEP,
-              defs.SET,
-              defs.SEP,
-              defs.JOINT,
-              defs.SEP,
-              ('00'+value).substr(-3),
-              defs.SEP].join('');
-  };
-  
-  // End Effector set frame. Differential movement in one direction.
-  // TODO: UNITS. If called without arguments, returns the preambule
-  defs.SET_EE_DIF_POS = function(values){
 
-    var header = [  defs.SEP,
-                    defs.HRP,
+  // All Joints' values get frame
+  defs.GET_JOINTS =  function(){ 
+    return [  defs.PRE,
+              defs.SEP,
+              defs.GET_ALL,
+              defs.SEP,
+              defs.JOINT,
+              defs.SEP,
+              defs.VAL,
+              defs.SEP].join('');
+  };
+
+  // End Effector set frame. Differential movement in X,Y,Z
+  // TODO: UNITS. If called without arguments, returns the header
+  defs.SET_EE_POS = function(values,dif){
+    dif = dif?defs.EED:defs.EE;
+    var header = [  defs.PRE,
                     defs.SEP,
                     defs.SET,
                     defs.SEP,
-                    defs.EE,
+                    dif,
                     defs.SEP,
                     defs.VAL].join('');
 
@@ -373,30 +390,28 @@ var hrp = function(path,port,rdefs){
                 defs.SEP].join('');
   };
 
-  // Joint's value get frame
-  defs.GET_JOINT =  function(id){ 
+  // Joint's value set frame
+  defs.SET_JOINT =  function(id,value){
     id = defs.check_id(id);
     if(!id)
       return false;
-    return [  defs.SEP,
-              defs.HRP,
+    var header = [  defs.PRE,
+                    defs.SEP,
+                    defs.SET,
+                    defs.SEP,
+                    defs.JOINT,
+                    defs.SEP,
+                    defs.VAL,
+                    defs.SEP,
+                    ('00'+id).substr(-3)].join(''); //TODO: FormatID(...)
+
+    if(typeof value === 'undefined' || value === null){
+        return header;
+    } 
+
+    return [  header,
               defs.SEP,
-              defs.GET,
-              defs.SEP,
-              defs.JOINT,
-              defs.SEP,
-              ('00'+id).substr(-3),
-              defs.SEP].join('');
-  };
-  
-  // All Joints' values get frame
-  defs.GET_JOINTS =  function(){ 
-    return [  defs.SEP,
-              defs.HRP,
-              defs.SEP,
-              defs.GET_ALL,
-              defs.SEP,
-              defs.JOINT,
+              defs.formatValue(value),
               defs.SEP].join('');
   };
 
@@ -418,7 +433,7 @@ var hrp = function(path,port,rdefs){
       {name: 'ackReceived',       from: 'waitAck',  to: 'idle'},
       {name: 'requestRobotInfo',  from: 'idle',     to: 'waitRobotInfo'},
       {name: 'gotRobotInfo',      from: 'waitRobotInfo',     to: 'idle'},
-      {name: 'setEEDifPos',       from: 'idle',     to: 'waitAck'},
+      {name: 'setEEPos',          from: 'idle',     to: 'waitAck'},
       {name: 'getJoints',         from: 'idle',     to: 'waitJoints'},
       {name: 'gotJoints',         from: 'waitJoints',  to: 'idle'}
     ],
@@ -429,8 +444,8 @@ var hrp = function(path,port,rdefs){
       onrequestRobotInfo: function(event, from, to){
         protocol.write(defs.ROBOT_INFO());
       },
-      onsetEEDifPos: function(event,from,to,values){
-        protocol.write(defs.SET_EE_DIF_POS(values));
+      onsetEEPos: function(event,from,to,values,dif){
+        protocol.write(defs.SET_EE_DIF_POS(values,dif));
       },
       ongetJoints: function(event,from,to){
         protocol.write(defs.GET_JOINTS());
@@ -553,7 +568,7 @@ var hrp = function(path,port,rdefs){
     }
     
     if(!connected)
-      return Promise.reject('Not connected');
+      return Promise.reject(false);
 
     return new Promise(function(resolve, reject){
         
@@ -575,10 +590,11 @@ var hrp = function(path,port,rdefs){
   /**
    * Sends the order of End Effector movement to the robot. If the robot
    * does not respond with an ACK, then the Promise is rejected.
-   * @param {String} move  Direction of movement. ('MU','MD','ML','MR','MF','MB','MN')
-   * @param {String} value Amount of movement. SHOULD BE X.XX TODO!!
+   * @param {String} values Amount of movement or Absolute Position in X,Y,Z
+   * @param {Boolean} dif If true, movement will be with respect to the actual position
+   *                      If false, movement will be to an absolute position
    */
-  protocol.setEEDifPos = function(values){
+  protocol.setEEPos = function(values,dif){
       
       if(protocol.fsm.current !== 'idle'){
         return Promise.reject();
@@ -589,10 +605,10 @@ var hrp = function(path,port,rdefs){
 
       return new Promise(function(resolve, reject){
         // First Connect!
-        protocol.fsm.setEEDifPos(values);
+        protocol.fsm.setEEPos(values,dif);
         protocol.read().then(function(msg){
           protocol.fsm.ackReceived();
-          if(msg === defs.GENERAL_ACK()){
+          if(msg === defs.GENERAL_ACK(defs.SET_EE_POS(null,dif))){
             resolve(true);
           }else{
             reject(false);

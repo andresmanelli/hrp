@@ -92,8 +92,8 @@ describe('Testing the protocol for errors',function(){
 			return test.getRobotInfo().should.be.rejected;
 		});
 
-		it('should reject setEEDifPos()',function(){
-			return test.setEEDifPos().should.be.rejected;
+		it('should reject setEEPos()',function(){
+			return test.setEEPos().should.be.rejected;
 		});
 
 	});
@@ -117,15 +117,16 @@ describe('Testing the protocol for errors',function(){
 		});
 
 		it('SET_EE_DIF_POS tests',function(){
-			test.SET_EE_DIF_POS([0,3,56.7]).should.equal(':HRP:S:EE:V:0.00:3.00:56.70:');
-			test.SET_EE_DIF_POS([0.1,-3,-3.2]).should.equal(':HRP:S:EE:V:0.10:-3.00:-3.20:');
-			test.SET_EE_DIF_POS([-0.0245,100.234,1.4]).should.equal(':HRP:S:EE:V:-0.02:100.23:1.40:');
+			test.SET_EE_POS([0,3,56.7]).should.equal(':HRP:S:EE:V:0.00:3.00:56.70:');
+			test.SET_EE_POS([0,3,56.7],true).should.equal(':HRP:S:EED:V:0.00:3.00:56.70:');
+			test.SET_EE_POS([0.1,-3,-3.2]).should.equal(':HRP:S:EE:V:0.10:-3.00:-3.20:');
+			test.SET_EE_POS([-0.0245,100.234,1.4],true).should.equal(':HRP:S:EED:V:-0.02:100.23:1.40:');
 		})
 
 		it('SET_EE_DIF_POS should return false if invalid move',function(){
-			test.SET_EE_DIF_POS('invalid',1.2).should.be.false;
-			test.SET_EE_DIF_POS(1.2).should.be.false;
-			test.SET_EE_DIF_POS([1.2]).should.be.false;
+			test.SET_EE_POS('invalid',1.2).should.be.false;
+			test.SET_EE_POS(1.2).should.be.false;
+			test.SET_EE_POS([1.2]).should.be.false;
 		});
 	});
 });
