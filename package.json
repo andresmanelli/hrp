@@ -1,6 +1,6 @@
 {
   "name": "hrp",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Module that implements a protocol for talking to robots over a HID-USB communication",
   "main": "hrp.js",
   "directories": {
