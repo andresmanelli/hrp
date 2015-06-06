@@ -58,21 +58,24 @@ Where:
 * HRP-Compliance ACK frame
   - Q: ```:HRP:CA:``` -- A: ```:HRP:CA:```
 * Get the robot information
-  - Q: ```:HRP:G:R:INFO:``` -- A: ```:HRP:R:INFO:info_string:```
+  - Q: ```:HRP:G:R:INFO:``` -- A: ```:HRP:G:R:INFO:info_string:```
   - (info_string can be obtained with the function ```HRP.robotInfo2str(info)```
   - (the info can be converted to an object with the function ```HRP.str2robotInfo(str)```
 * Get the joint information
-  - Q: ```:HRP:G:J:INFO:``` -- A: ```:HRP:J:INFO:info_string:```
+  - Q: ```:HRP:G:J:INFO:``` -- A: ```:HRP:G:J:INFO:info_string:```
   - (info_string can be obtained with the function ```HRP.robotInfo2str(info)```
   - (the info can be converted to an object with the function ```HRP.str2robotInfo(str)```
 * Get a joint value
-  - Q: ```:HRP:G:J:V:id:``` -- A: ```:HRP:J:id:value:```
+  - Q: ```:HRP:G:J:V:id:``` -- A: ```:HRP:G:J:id:value:```
   - (id is an integer between 0 and 999, formatted as 000-999)
   - (value is a number with two decimal places. It must contain the two decimal places, as in 1.00)
 * Get all joints values
-  - Q: ```:HRP:GA:J:V:``` -- A: ```:HRP:J:id1:value1: ... idn:valuen:```
+  - Q: ```:HRP:GA:J:V:``` -- A: ```:HRP:GA:J:id1:value1: ... idn:valuen:```
 * Set the end effector value (position)
   - Q: ```:HRP:S:EE:V:x_pos:y_pos:z_pos:``` -- A: ```:HRP:A:S:EE:V:```
+  - (work TODO: set also the orientation)
+* Set the end effector value (differential position)
+  - Q: ```:HRP:S:EED:V:x_pos:y_pos:z_pos:``` -- A: ```:HRP:A:S:EED:V:```
   - (work TODO: set also the orientation)
 * Set a joint value (position, angle, etc)
   - Q: ```:HRP:S:J:V:id:value:``` -- A: ```:HRP:A:S:J:V:id```
@@ -80,9 +83,9 @@ Where:
   - (value is a number with two decimal places. It must contain the two decimal places, as in 1.00)
 
 ### Example of information string
-- Q: ```:HRP:G:R:INFO``` -- A: ```:HRP:R:INFO:B:MY_BRAND:M:MODEL_A:DOF:2:J:012,056:```
-- Q: ```:HRP:G:J:INFO:012``` -- A: ```:HRP:J:INFO:012:J_TYPE:R:J_DESC:CC_MOTOR:J_RANGE:0.00,180.00:J_UNITS:deg:```
-- Q: ```:HRP:G:J:INFO:056``` -- A: ```:HRP:J:INFO:056:J_TYPE:T:J_DESC:STEPPER_MOTOR:J_RANGE:0.00,20.00:J_UNITS:mm:```
+- Q: ```:HRP:G:R:INFO``` -- A: ```:HRP:G:R:INFO:B:MY_BRAND:M:MODEL_A:DOF:2:J:012,056:```
+- Q: ```:HRP:G:J:INFO:012``` -- A: ```:HRP:G:J:INFO:012:J_TYPE:R:J_DESC:CC_MOTOR:J_RANGE:0.00,180.00:J_UNITS:deg:```
+- Q: ```:HRP:G:J:INFO:056``` -- A: ```:HRP:G:J:INFO:056:J_TYPE:T:J_DESC:STEPPER_MOTOR:J_RANGE:0.00,20.00:J_UNITS:mm:```
  - The order of the fields are not important because they are stored in an object.
  
 ...to be continued
