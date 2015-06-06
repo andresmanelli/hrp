@@ -42,7 +42,7 @@ Where:
 * The robot must ACK the received _Set_ command even if it can not complete the operation (e.g., move the end effector to desired position)
 * The robot must not ACK the received _Get_ command, it should only send the requested information
   * ACK: ```A```
-  * Compilance ACK: ```CA```
+  * Compliance ACK: ```CA```
 * The robot should send the following general information when asked to:
   * Brand (string) (```B```)
   * Model (string) (```M```)
@@ -55,7 +55,7 @@ Where:
   * Joint Units (string, e.g., 'deg','rad','mm') (```J_UNITS```)
 
 ### Specifics
-* HRP-Compilance ACK frame
+* HRP-Compliance ACK frame
   - Q: ```:HRP:CA:``` -- A: ```:HRP:CA:```
 * Get the robot information
   - Q: ```:HRP:G:R:INFO:``` -- A: ```:HRP:R:INFO:info_string:```

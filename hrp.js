@@ -15,8 +15,8 @@
  *   var HRP = require('./HRP.js');
  *   var robot = HRP(PATH,PORT_IF_VIRTUAL,ONLY_DEFS);
  *   
- * @param {String} path  Path of the HRP compilant robot
- * @param {Integer} port  Port used to comunicate with a virtual HRP compilant
+ * @param {String} path  Path of the HRP compliant robot
+ * @param {Integer} port  Port used to comunicate with a virtual HRP compliant
  * robot
  * @param {Bool} rdefs If true, returns only static definitions.
  */
@@ -102,7 +102,7 @@ var hrp = function(path,port,rdefs){
   defs.INFO = 'INFO'; // Info about something
   defs.VAL = 'V'; // Value
   // ACKS
-  defs.CA = 'CA'; // Compilance Ack
+  defs.CA = 'CA'; // compliance Ack
   defs.GA = 'A'; // General Ack
 
   /**
@@ -299,7 +299,7 @@ var hrp = function(path,port,rdefs){
               defs.SEP].join('');
   };
 
-  // HRP Compilance frame
+  // HRP compliance frame
   defs.COMP_ACK = function(){
     return [  defs.PRE,
               defs.SEP,
@@ -445,7 +445,7 @@ var hrp = function(path,port,rdefs){
         protocol.write(defs.ROBOT_INFO());
       },
       onsetEEPos: function(event,from,to,values,dif){
-        protocol.write(defs.SET_EE_DIF_POS(values,dif));
+        protocol.write(defs.SET_EE_POS(values,dif));
       },
       ongetJoints: function(event,from,to){
         protocol.write(defs.GET_JOINTS());
@@ -524,7 +524,7 @@ var hrp = function(path,port,rdefs){
 
   /**
    * Verifies that this device is (or not) a HRP compatible robot. Resolve the
-   * Promise with true or false. We don't reject in case of not-compilance
+   * Promise with true or false. We don't reject in case of not-compliance
    * because this way we can group many calls to isHRP(...) and test all the
    * results together with Promise.all(...).
    *
