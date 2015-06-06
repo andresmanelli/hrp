@@ -94,6 +94,6 @@ Where:
 Version 0.1.0 will respond to this specification. Work in progress.
 
 ## See also
-[hrp-server](https://github.com/andresmanelli/hrp-server)
-[virtual-hrp-robot](https://github.com/andresmanelli/virtual-hrp-robot)
-[hrp-joy-driver](https://github.com/andresmanelli/hrp-joy-driver)
+- [hrp-server](https://github.com/andresmanelli/hrp-server)
+- [virtual-hrp-robot](https://github.com/andresmanelli/virtual-hrp-robot)
+- [hrp-joy-driver](https://github.com/andresmanelli/hrp-joy-driver)
